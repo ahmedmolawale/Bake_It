@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="ingredient_button">Ingredients</string>
+    <string name="steps_button">Steps</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="quantity_value">1.67</string>
+    <string name="measure_label">Measure:</string>
+    <string name="quantity_label">QTY:</string>
+    <string name="measure_value">1.78</string>
+    <string name="ingredient_name">Ingredient_name</string>
+    <string name="step_short_desc">Short Description</string>
+    <string name="step_long_desc">Long Description</string>
+    <string name="prev">Previous</string>
+    <string name="next">Next</string>
+</resources>
