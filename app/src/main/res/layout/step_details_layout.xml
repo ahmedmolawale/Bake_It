@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/step_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scaleType="centerInside" />
+    android:orientation="vertical"
+    >
+    <FrameLayout
+        android:id="@+id/step_video_container"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerInside"/>
+
+    <FrameLayout
+        android:id="@+id/step_desc_container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerInside"/>
+
+    <FrameLayout
+        android:id="@+id/step_nav_container"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:scaleType="centerInside"/>
+
+
+
+
+
+
+</LinearLayout>

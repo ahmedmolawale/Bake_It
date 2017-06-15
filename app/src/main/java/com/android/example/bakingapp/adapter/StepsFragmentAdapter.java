@@ -32,7 +32,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
 
     //interface to handle clicks
     public interface OnListItemClickListener {
-        void onListItemClick(int position);
+        void onListItemClick(View v,int position);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
 
         }
         private void loadImage(String url) {
-            //use Picasso to load the image
+            //use Picasso to load the thumbnail image
             Picasso.with(context).load(url)
                     .placeholder(R.mipmap.ic_launcher)
                     .error(R.drawable.action_error)
@@ -88,7 +88,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            onListItemClickListener.onListItemClick(position);
+            onListItemClickListener.onListItemClick(v,position);
         }
     }
 }

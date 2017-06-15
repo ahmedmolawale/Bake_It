@@ -1,6 +1,7 @@
 package com.android.example.bakingapp.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -56,11 +57,15 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
         if (tabView) {
             //set the layout of the recycler view to be grid layout
             layoutManager = new GridLayoutManager(this, 5);
-            recipeRecyclerView.setLayoutManager(layoutManager);
+
         } else {
-            layoutManager = new LinearLayoutManager(this);
-            recipeRecyclerView.setLayoutManager(layoutManager);
+            //if landscape,use grid view of 3
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+                layoutManager = new GridLayoutManager(this, 3);
+            else
+                layoutManager = new LinearLayoutManager(this);
         }
+        recipeRecyclerView.setLayoutManager(layoutManager);
         recipeRecyclerView.setHasFixedSize(true);
 
         if (savedInstanceState != null) {
@@ -136,7 +141,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
                 mProgressBar.setVisibility(View.INVISIBLE);
                 String errorTitle = "Error";
                 String errorMessage = "Data request failed.";
-                displayMessage(RecipeActivity.this, errorTitle, errorMessage + t.getMessage());
+                displayMessage(RecipeActivity.this, errorTitle, errorMessage);
             }
         });
 
@@ -159,7 +164,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
             startActivity(intent);
         } else {
             Toast toast = Toast.makeText(this, "No Ingredient for Recipe.", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER,0,0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
@@ -174,7 +179,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
             startActivity(intent);
         } else {
             Toast toast = Toast.makeText(this, "No Steps for Recipe.", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER,0,0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
     }
