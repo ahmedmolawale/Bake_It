@@ -1,7 +1,10 @@
 package com.android.example.bakingapp.activity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +17,8 @@ import android.widget.Toast;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.adapter.RecipeAdapter;
+import com.android.example.bakingapp.data.RecipeContentProvider;
+import com.android.example.bakingapp.data.RecipeContract;
 import com.android.example.bakingapp.model.Ingredient;
 import com.android.example.bakingapp.model.Recipe;
 import com.android.example.bakingapp.model.Step;
@@ -32,7 +37,8 @@ import retrofit2.Response;
 
 import static com.android.example.bakingapp.util.Utility.displayMessage;
 
-public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.onOptionClickListener {
+public class RecipeActivity extends AppCompatActivity
+        implements RecipeAdapter.onOptionClickListener {
 
     public static final String RECIPES_ID = "recipes_id";
     public static final String INGREDIENT_EXTRA = "ingredient_extra";
@@ -43,7 +49,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
     ProgressBar mProgressBar;
 
     private RecipeAdapter recipeAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
 
     private ArrayList<Recipe> recipes;
 
@@ -56,12 +62,12 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
         if (findViewById(R.id.recipe_list_on_tab) != null) tabView = true;
         if (tabView) {
             //set the layout of the recycler view to be grid layout
-            layoutManager = new GridLayoutManager(this, 5);
+            layoutManager = new GridLayoutManager(this, 3);
 
         } else {
             //if landscape,use grid view of 3
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-                layoutManager = new GridLayoutManager(this, 3);
+                layoutManager = new GridLayoutManager(this, 2);
             else
                 layoutManager = new LinearLayoutManager(this);
         }
@@ -70,20 +76,138 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
 
         if (savedInstanceState != null) {
             recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
-            recipeAdapter = new RecipeAdapter(this, recipes, this);
-            recipeRecyclerView.setAdapter(recipeAdapter);
+            sail();
             return;
         }
+        //if we have internet
         //call the Api to get the data
-        callToApi();
+        //if we have internet, load remotely otherwise load locally
+        if (Utility.isOnline(this))
+            callToApi();
+        else {
+            //if recipes is available locally, load it
+            if (checkRecipesLocally()) {
+                loadRecipeLocally();
+            } else {
+                //try api again
+                callToApi();
+            }
+        }
 
+    }
+
+    private void loadRecipeLocally() {
+        AsyncTask<Void, Void, ArrayList<Recipe>> task = new AsyncTask<Void, Void, ArrayList<Recipe>>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected ArrayList<Recipe> doInBackground(Void... params) {
+                //get the recipes first
+                ArrayList<Recipe> recipes = new ArrayList<>();
+                Cursor cursor = null;
+                try {
+                    cursor = getContentResolver().query(RecipeContentProvider.Recipes.CONTENT_URI, null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        for (int i = 0; i < cursor.getCount(); i++) {
+                            Recipe recipe = new Recipe();
+                            cursor.moveToPosition(i);
+                            int id = cursor.getInt(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_ID));
+                            String name = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME));
+                            String imageUrl = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_IMAGE_URL));
+                            int servings = cursor.getInt(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_SERVINGS));
+                            recipe.setId(id);
+                            recipe.setName(name);
+                            recipe.setImage(imageUrl);
+                            recipe.setServings(servings);
+                            //load ingredient for this id
+                            Cursor cursor1 = null;
+                            ArrayList<Ingredient> ingredients = new ArrayList<>();
+                            try {
+                                cursor1 = getContentResolver().query(RecipeContentProvider.RecipeIngredients.withId(id), null, null, null, null);
+
+                                if (cursor1 != null && cursor1.moveToFirst()) {
+                                    for (int j = 0; j < cursor1.getCount(); j++) {
+                                        Ingredient ingredient = new Ingredient();
+                                        cursor1.moveToPosition(j);
+                                        String ingredientName = cursor1.getString(cursor1.getColumnIndex(RecipeContract.RecipeIngredientsEntry.COLUMN_INGREDIENT_NAME));
+                                        String measure = cursor1.getString(cursor1.getColumnIndex(RecipeContract.RecipeIngredientsEntry.COLUMN_MEASURE));
+                                        double quantity = cursor1.getDouble(cursor1.getColumnIndex(RecipeContract.RecipeIngredientsEntry.COLUMN_QUANTITY));
+                                        ingredient.setIngredient(ingredientName);
+                                        ingredient.setMeasure(measure);
+                                        ingredient.setQuantity(quantity);
+                                        ingredients.add(ingredient);
+
+                                    }
+                                    recipe.setIngredients(ingredients);
+                                }
+                            } finally {
+                                if (cursor1 != null) cursor1.close();
+                            }
+                            //load steps for this recipe
+                            ArrayList<Step> steps = new ArrayList<>();
+                            Cursor cursor2 = null;
+                            try {
+                                cursor2 = getContentResolver().query(RecipeContentProvider.RecipeSteps.withId(id), null, null, null, null);
+                                if (cursor2 != null && cursor2.moveToFirst()) {
+                                    for (int k = 0; k < cursor2.getCount(); k++) {
+                                        Step step = new Step();
+                                        cursor2.moveToPosition(k);
+                                        int stepId = cursor2.getInt(cursor2.getColumnIndex(RecipeContract.RecipeStepsEntry.COLUMN_STEP_ID));
+                                        String shortDesc = cursor2.getString(cursor2.getColumnIndex(RecipeContract.RecipeStepsEntry.COLUMN_SHORT_DESC));
+                                        String longDesc = cursor2.getString(cursor2.getColumnIndex(RecipeContract.RecipeStepsEntry.COLUMN_LONG_DESC));
+                                        String videoUrl = cursor2.getString(cursor2.getColumnIndex(RecipeContract.RecipeStepsEntry.COLUMN_VIDEO_URL));
+                                        String thumbnailUrl = cursor2.getString(cursor2.getColumnIndex(RecipeContract.RecipeStepsEntry.COLUMN_THUMBNAIL_URL));
+                                        step.setId(stepId);
+                                        step.setShortDescription(shortDesc);
+                                        step.setDescription(longDesc);
+                                        step.setVideoURL(videoUrl);
+                                        step.setThumbnailURL(thumbnailUrl);
+                                        steps.add(step);
+                                    }
+                                    recipe.setSteps(steps);
+                                }
+                            } finally {
+                                if (cursor2 != null)
+                                    cursor2.close();
+                            }
+                            recipes.add(recipe);
+                        }
+                    }
+                    return recipes;
+                } finally {
+                    if (cursor != null)
+                        cursor.close();
+                }
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Recipe> recipes) {
+                super.onPostExecute(recipes);
+                mProgressBar.setVisibility(View.INVISIBLE);
+                RecipeActivity.this.recipes = recipes;
+                sail();
+            }
+
+        };
+
+        task.execute();
+    }
+
+    private void sail() {
+        recipeAdapter = new RecipeAdapter(this, recipes, this);
+        recipeAdapter.notifyDataSetChanged();
+        recipeRecyclerView.setAdapter(recipeAdapter);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
-        recipeAdapter = new RecipeAdapter(this, recipes, this);
-        recipeRecyclerView.setAdapter(recipeAdapter);
+        sail();
     }
 
     void callToApi() {
@@ -130,8 +254,10 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
                         toast.show();
                     } else {
                         //create the recipes list adapter here
-                        recipeAdapter = new RecipeAdapter(RecipeActivity.this, recipes, RecipeActivity.this);
-                        recipeRecyclerView.setAdapter(recipeAdapter);
+                        sail();
+                        //save into database if data is not available locally
+                        if (!checkRecipesLocally())
+                            saveRecipesLocally();
                     }
                 }
             }
@@ -145,6 +271,66 @@ public class RecipeActivity extends AppCompatActivity implements RecipeAdapter.o
             }
         });
 
+    }
+
+    private boolean checkRecipesLocally() {
+        Cursor cursor = null;
+        try {
+            cursor = getContentResolver().query(RecipeContentProvider.Recipes.CONTENT_URI, null, null, null, null);
+            if (cursor != null && cursor.moveToFirst())
+                return true;
+            else
+                return false;
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+    }
+
+    private void saveRecipesLocally() {
+        //perform insertion operation in a background thread
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                for (Recipe recipe : recipes) {
+                    int recipeId = recipe.getId();
+                    String recipeName = recipe.getName();
+                    String recipeImage = recipe.getImage();
+                    int servings = recipe.getServings();
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_ID, recipeId);
+                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME, recipeName);
+                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_IMAGE_URL, recipeImage);
+                    contentValues.put(RecipeContract.RecipeEntry.COLUMN_SERVINGS, servings);
+                    getContentResolver().insert(RecipeContentProvider.Recipes.CONTENT_URI, contentValues);
+                    //insert the ingredients for the current recipe
+                    ArrayList<Ingredient> ingredients = recipe.getIngredients();
+                    for (Ingredient ingredient : ingredients) {
+                        ContentValues contentValues1 = new ContentValues();
+                        contentValues1.put(RecipeContract.RecipeIngredientsEntry.COLUMN_RECIPE_ID, recipeId);
+                        contentValues1.put(RecipeContract.RecipeIngredientsEntry.COLUMN_INGREDIENT_NAME, ingredient.getIngredient());
+                        contentValues1.put(RecipeContract.RecipeIngredientsEntry.COLUMN_MEASURE, ingredient.getMeasure());
+                        contentValues1.put(RecipeContract.RecipeIngredientsEntry.COLUMN_QUANTITY, ingredient.getQuantity());
+                        getContentResolver().insert(RecipeContentProvider.RecipeIngredients.CONTENT_URI, contentValues1);
+                    }
+                    //insert the steps for the current recipe
+                    ArrayList<Step> steps = recipe.getSteps();
+                    for (Step step : steps) {
+                        ContentValues contentValues2 = new ContentValues();
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_RECIPE_ID, recipeId);
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_STEP_ID, step.getId());
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_SHORT_DESC, step.getShortDescription());
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_LONG_DESC, step.getDescription());
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_VIDEO_URL, step.getVideoURL());
+                        contentValues2.put(RecipeContract.RecipeStepsEntry.COLUMN_THUMBNAIL_URL, step.getThumbnailURL());
+                        getContentResolver().insert(RecipeContentProvider.RecipeSteps.CONTENT_URI, contentValues2);
+                    }
+
+                }
+                return null;
+            }
+        };
+        task.execute();
     }
 
     @Override

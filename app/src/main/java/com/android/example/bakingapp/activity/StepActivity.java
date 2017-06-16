@@ -3,6 +3,7 @@ package com.android.example.bakingapp.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -26,6 +27,10 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.step_activity_layout);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("Recipe Baking Steps");
+        }
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(RecipeActivity.STEP_EXTRA)) {
             steps = intent.getParcelableArrayListExtra(RecipeActivity.STEP_EXTRA);

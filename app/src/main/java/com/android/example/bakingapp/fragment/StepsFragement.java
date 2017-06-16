@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 public class StepsFragement extends Fragment {
 
+    private static final String STEPS = "steps";
     private StepsFragmentAdapter.OnListItemClickListener onListItemClickListener;
     private RecyclerView stepsRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -62,8 +63,17 @@ public class StepsFragement extends Fragment {
         if(intent != null && intent.hasExtra(RecipeActivity.STEP_EXTRA)){
             recipeSteps = intent.getParcelableArrayListExtra(RecipeActivity.STEP_EXTRA);
         }
+        if(savedInstanceState != null)
+            recipeSteps = savedInstanceState.getParcelableArrayList(STEPS);
+
         stepsFragmentAdapter = new StepsFragmentAdapter(getContext(),recipeSteps,onListItemClickListener);
         stepsRecyclerView.setAdapter(stepsFragmentAdapter);
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STEPS,recipeSteps);
     }
 }

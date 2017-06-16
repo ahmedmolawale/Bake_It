@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/navigation_on_step_details"
     android:layout_width="match_parent"
     android:layout_height="50dp"
@@ -10,18 +10,22 @@
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="75dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="75dp"
 
-        android:layout_marginStart="50dp"
-        android:text="@string/prev" />
+        android:layout_marginLeft="30dp"
+
+        android:layout_marginStart="30dp"
+        android:background="@drawable/ic_prev" />
 
     <Button
         android:id="@+id/step_next"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next" />
+        android:layout_marginEnd="42dp"
+        android:layout_marginRight="42dp"
+        android:background="@drawable/ic_next"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
-</LinearLayout>
+</RelativeLayout>

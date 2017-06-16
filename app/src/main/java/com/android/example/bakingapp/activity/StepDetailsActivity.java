@@ -42,7 +42,7 @@ public class StepDetailsActivity extends AppCompatActivity implements StepNavFra
             position = savedInstanceState.getInt(POSITION);
         }
         if(actionBar!=null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("Baking...");
         }
         if (findViewById(R.id.step_detail_landscape) != null) {
             //landscape mode

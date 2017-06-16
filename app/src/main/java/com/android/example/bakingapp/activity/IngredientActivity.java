@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +26,7 @@ public class IngredientActivity extends AppCompatActivity {
     RecyclerView ingredientRecyclerView;
 
     private IngredientAdapter ingredientAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
 
     private ArrayList<Ingredient> ingredients;
 
@@ -51,6 +52,12 @@ public class IngredientActivity extends AppCompatActivity {
             ingredientRecyclerView.setLayoutManager(layoutManager);
         }
         ingredientRecyclerView.setHasFixedSize(true);
+        // Add dividers
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                ingredientRecyclerView.getContext(),
+                layoutManager.getOrientation());
+        ingredientRecyclerView.addItemDecoration(dividerItemDecoration);
 
         if (savedInstanceState != null) {
             ingredients = savedInstanceState.getParcelableArrayList(INGREDIENT_ID);
