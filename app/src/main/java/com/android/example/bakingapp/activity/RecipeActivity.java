@@ -2,14 +2,18 @@ package com.android.example.bakingapp.activity;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,11 +29,12 @@ import com.android.example.bakingapp.model.Step;
 import com.android.example.bakingapp.rest.ApiClient;
 import com.android.example.bakingapp.rest.ApiInterface;
 import com.android.example.bakingapp.util.Utility;
+import com.android.example.bakingapp.widget.RecipeService;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,10 +48,9 @@ public class RecipeActivity extends AppCompatActivity
     public static final String RECIPES_ID = "recipes_id";
     public static final String INGREDIENT_EXTRA = "ingredient_extra";
     public static final String STEP_EXTRA = "step_extra";
-    @InjectView(R.id.recipe_recycler_view)
-    RecyclerView recipeRecyclerView;
-    @InjectView(R.id.recipe_progress_bar)
-    ProgressBar mProgressBar;
+
+    @BindView(R.id.recipe_recycler_view) RecyclerView recipeRecyclerView;
+    @BindView(R.id.recipe_progress_bar) ProgressBar mProgressBar;
 
     private RecipeAdapter recipeAdapter;
     private LinearLayoutManager layoutManager;
@@ -57,7 +61,11 @@ public class RecipeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recipe_screen_layout);
-        ButterKnife.inject(this);
+        ButterKnife.bind(RecipeActivity.this);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null)
+            actionBar.setTitle("Recipes");
         boolean tabView = false;
         if (findViewById(R.id.recipe_list_on_tab) != null) tabView = true;
         if (tabView) {
@@ -76,6 +84,7 @@ public class RecipeActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
+            Log.e("See!!!", "Calledddd");
             sail();
             return;
         }
@@ -336,8 +345,9 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //to avoid any reload when orientation is changed
-        outState.putParcelableArrayList(RECIPES_ID, recipes);
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(RECIPES_ID, recipes);
+
     }
 
     @Override
@@ -358,15 +368,40 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onStepsClick(int position) {
         //create an explicit intent to launch the steps activity
+        launchStepDetails(position);
+    }
+
+    @Override
+    public void onCardViewClick(int position) {
+        launchStepDetails(position);
+    }
+
+    public void launchStepDetails(int position){
         Intent intent = new Intent(RecipeActivity.this, StepActivity.class);
+        Recipe recipe = recipes.get(position);
         ArrayList<Step> steps = recipes.get(position).getSteps();
+        //grab the ingredients also
+        ArrayList<Ingredient> ingredients = recipes.get(position).getIngredients();
+
+        //any clicked recipe becomes the desired recipe and thus update the widget appropriately
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.edit().putInt(RECIPES_ID, recipe.getId()).apply();
+        RecipeService.startActionUpdateRecipeWidgets(this);
         if (steps != null && steps.size() > 0) {
             intent.putParcelableArrayListExtra(STEP_EXTRA, steps);
-            startActivity(intent);
+
         } else {
             Toast toast = Toast.makeText(this, "No Steps for Recipe.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
         }
+        if (ingredients != null && ingredients.size() > 0) {
+            intent.putParcelableArrayListExtra(INGREDIENT_EXTRA, ingredients);
+        } else {
+            Toast toast = Toast.makeText(this, "No Ingredients for Recipe.", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+        startActivity(intent);
     }
 }

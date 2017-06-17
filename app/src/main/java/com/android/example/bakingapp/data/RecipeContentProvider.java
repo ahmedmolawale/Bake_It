@@ -43,6 +43,16 @@ public class RecipeContentProvider {
                 type = "vnd.android.cursor.dir/recipe",
                 defaultSort = RecipeContract.RecipeEntry.COLUMN_ID + " ASC")
         public static final Uri CONTENT_URI = buildUri(Path.RECIPES);
+
+        @InexactContentUri(
+                path = Path.RECIPES + "/#",
+                name = "COLUMN_ID",
+                type = "vnd.android.cursor.item/recipe",
+                whereColumn = RecipeContract.RecipeEntry.COLUMN_ID,
+                pathSegment = 1)
+        public static Uri withId(long id) {
+            return buildUri(Path.RECIPES, String.valueOf(id));
+        }
     }
 
     @TableEndpoint(table = RecipeDatabase.RECIPE_INGREDIENTS)

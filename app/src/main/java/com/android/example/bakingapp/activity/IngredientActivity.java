@@ -15,14 +15,14 @@ import com.android.example.bakingapp.model.Ingredient;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class IngredientActivity extends AppCompatActivity {
 
     private static final String INGREDIENT_ID = "ingredient_id";
     private static final String INGREDIENT_ACTIVITY_TITLE = "Recipe Ingredients";
-    @InjectView(R.id.ingredient_recycler_view)
+    @BindView(R.id.ingredient_recycler_view)
     RecyclerView ingredientRecyclerView;
 
     private IngredientAdapter ingredientAdapter;
@@ -34,7 +34,7 @@ public class IngredientActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredient_activity_layout);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

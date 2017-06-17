@@ -1,6 +1,7 @@
 package com.android.example.bakingapp.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,13 @@ import android.widget.TextView;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.model.Recipe;
+import com.android.example.bakingapp.util.Utility;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by root on 6/13/17.
@@ -33,7 +38,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
 
     public interface onOptionClickListener {
         void onIngredientClick(int position);
+
         void onStepsClick(int position);
+        void onCardViewClick(int position);
+
     }
 
     @Override
@@ -61,22 +69,32 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView recipeName;
-        private ImageView recipeImage;
-        private Button recipeIngredient;
-        private Button recipeSteps;
+        @BindView(R.id.recipe_name)
+        TextView recipeName;
+        @BindView(R.id.recipe_image)
+        ImageView recipeImage;
+        @BindView(R.id.recipe_ingredient)
+        Button recipeIngredient;
+        @BindView(R.id.recipe_steps)
+        Button recipeSteps;
+        @BindView(R.id.recipe_card_view)
+        CardView cardView;
+
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-            recipeName = (TextView) itemView.findViewById(R.id.recipe_name);
-            recipeImage = (ImageView) itemView.findViewById(R.id.recipe_image);
-            recipeIngredient = (Button) itemView.findViewById(R.id.recipe_ingredient);
-            recipeSteps = (Button) itemView.findViewById(R.id.recipe_steps);
+            ButterKnife.bind(this, itemView);
 
         }
 
         public void bind(final int position) {
 
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onOptionClickListener.onCardViewClick(position);
+                }
+            });
             recipeIngredient.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -94,6 +112,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
             String recipeImageUrl = recipes.get(position).getImage();
             this.recipeName.setText(recipeName);
             if (!recipeImageUrl.equals("")) loadImage(recipeImageUrl);
+            else
+                recipeImage.setImageBitmap(Utility.loadImageAsset(context, position));
+            //recipeImage.setImageResource(R.drawable.brownies);
         }
 
         private void loadImage(String recipeImageUrl) {

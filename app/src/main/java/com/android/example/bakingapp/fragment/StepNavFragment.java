@@ -3,6 +3,7 @@ package com.android.example.bakingapp.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,10 @@ import com.android.example.bakingapp.model.Step;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by root on 6/15/17.
  */
@@ -24,13 +29,16 @@ public class StepNavFragment extends Fragment {
     private static final String PREV_POSITION = "prev_position";
     private static final String NEXT_POSITION = "next_position";
     private static final String POSITION = "position";
-    private Button prev;
-    private Button next;
+    @BindView(R.id.step_prev)
+     FloatingActionButton prev;
+    @BindView(R.id.step_next)
+     FloatingActionButton next;
     private ArrayList<Step> steps;
     private int position;
     private int prevPositionTemp;
     private int nextPositionTemp;
     private OnNavButtonClickListener onNavButtonClickListener;
+    private Unbinder unbinder;
 
     public interface OnNavButtonClickListener {
         void onPrevButtonClickListener(int currentPosition);
@@ -59,8 +67,7 @@ public class StepNavFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.fragment_recipe_step_nav, container, false);
-        prev = (Button) view.findViewById(R.id.step_prev);
-        next = (Button) view.findViewById(R.id.step_next);
+       unbinder =  ButterKnife.bind(StepNavFragment.this,view);
 
         if(savedInstanceState != null){
             steps = savedInstanceState.getParcelableArrayList(STEPS);
@@ -88,16 +95,16 @@ public class StepNavFragment extends Fragment {
     public void setUpButtons(int prev, int next) {
         try {
             steps.get(prev);
-            this.prev.setEnabled(true);
+            this.prev.setVisibility(View.VISIBLE);
         } catch (IndexOutOfBoundsException e) {
-            this.prev.setEnabled(false);
+            this.prev.setVisibility(View.GONE);
         }
 
         try {
             this.steps.get(next);
-            this.next.setEnabled(true);
+            this.next.setVisibility(View.VISIBLE);
         } catch (IndexOutOfBoundsException e) {
-            this.next.setEnabled(false);
+            this.next.setVisibility(View.GONE);
         }
     }
 
@@ -116,5 +123,9 @@ public class StepNavFragment extends Fragment {
         outState.putInt(POSITION,position);
         outState.putInt(PREV_POSITION,prevPositionTemp);
         outState.putInt(NEXT_POSITION,nextPositionTemp);
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

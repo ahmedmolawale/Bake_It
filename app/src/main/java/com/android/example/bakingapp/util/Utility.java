@@ -2,12 +2,12 @@ package com.android.example.bakingapp.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AlertDialog;
 
-/**
- * Created by root on 6/13/17.
- */
+import com.android.example.bakingapp.R;
 
 public class Utility {
 
@@ -31,5 +31,11 @@ public class Utility {
 
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public static Bitmap loadImageAsset(Context context,int position){
+
+        int[] images = {R.drawable.nutella_pie,R.drawable.brownies,R.drawable.yellow_cake,R.drawable.cheese_cake};
+        return BitmapFactory.decodeResource(context.getResources(),images[position]);
     }
 }

@@ -60,29 +60,19 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
     public class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView stepShorDesc;
-        private ImageView stepImage;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             stepShorDesc = (TextView) itemView.findViewById(R.id.recipe_step_short_desc);
-            stepImage = (ImageView) itemView.findViewById(R.id.recipe_step_image);
             itemView.setOnClickListener(this);
         }
 
         public void bind(final int position) {
             String stepShortDes = recipeSteps.get(position).getShortDescription();
-            String stepThumbnailURL = recipeSteps.get(position).getThumbnailURL();
 
             this.stepShorDesc.setText(stepShortDes);
-            if (!stepThumbnailURL.equals("")) loadImage(stepThumbnailURL);
 
-        }
-        private void loadImage(String url) {
-            //use Picasso to load the thumbnail image
-            Picasso.with(context).load(url)
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.drawable.action_error)
-                    .into(stepImage);
+
         }
 
         @Override

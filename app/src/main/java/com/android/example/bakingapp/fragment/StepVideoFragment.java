@@ -24,6 +24,10 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by root on 6/15/17.
  */
@@ -34,12 +38,14 @@ public class StepVideoFragment extends Fragment {
     private static final String MEDIA_URI = "media_url";
     private static final String CURRENT_WINDOW_INDEX = "current_window_index";
     private static final String AUTO_PLAY = "auto_play";
-    private SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.playerView)
+    SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
     private String mediaUri;
     private long playbackPosition;
     private int currentWindowIndex;
     private boolean autoPlay;
+    private Unbinder unbinder;
 
 
     @Nullable
@@ -48,7 +54,7 @@ public class StepVideoFragment extends Fragment {
 
 
         View view = inflater.inflate(R.layout.fragment_recipe_step_video, container, false);
-        mPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.playerView);
+        unbinder = ButterKnife.bind(StepVideoFragment.this,view);
         if(savedInstanceState != null){
             this.mediaUri = savedInstanceState.getString(MEDIA_URI);
             playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION,0);
@@ -160,5 +166,9 @@ public class StepVideoFragment extends Fragment {
             outState.putInt(CURRENT_WINDOW_INDEX,mExoPlayer.getCurrentWindowIndex());
             outState.putBoolean(AUTO_PLAY,mExoPlayer.getPlayWhenReady());
         }
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -12,6 +12,10 @@ import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.model.Step;
 import com.google.android.exoplayer2.util.Util;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by root on 6/15/17.
  */
@@ -19,9 +23,13 @@ import com.google.android.exoplayer2.util.Util;
 public class StepDescFragment extends Fragment {
 
     private static final String STEP = "step";
-    private TextView shortDesc;
-    private TextView description;
+    @BindView(R.id.step_short_desc)
+     TextView shortDesc;
+    @BindView(R.id.step_long_desc)
+     TextView description;
+
     private Step step;
+    private Unbinder unbinder;
 
 
     @Nullable
@@ -29,8 +37,7 @@ public class StepDescFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.fragment_recipe_step_desc,container,false);
-        shortDesc = (TextView) view.findViewById(R.id.step_short_desc);
-        description = (TextView) view.findViewById(R.id.step_long_desc);
+        unbinder = ButterKnife.bind(StepDescFragment.this,view);
         if(savedInstanceState != null){
             this.step = savedInstanceState.getParcelable(STEP);
         }
@@ -85,5 +92,9 @@ public class StepDescFragment extends Fragment {
             shortDesc = null;
             description = null;
         }
+    }
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

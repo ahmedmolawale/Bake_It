@@ -34,15 +34,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.RecipeActivity" />
         </activity>
-        <activity
-            android:name=".activity.StepDetailsActivity">
-
-        </activity>
+        <activity android:name=".activity.StepDetailsActivity"></activity>
 
         <provider
             android:name=".data.generated.RecipeContentProvider"
             android:authorities="com.android.example.bakingapp.provider"
-            android:exported="false" />
+            android:exported="true" />
+
+        <receiver android:name=".widget.RecipeWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recipe_widget_info" />
+        </receiver>
+        <service android:name=".widget.RecipeService"/>
+        <service android:name=".widget.ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>
