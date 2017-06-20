@@ -3,29 +3,23 @@
     android:id="@+id/step_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/step_video_container"
         android:layout_width="match_parent"
         android:layout_height="240dp"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside" />
 
     <FrameLayout
         android:id="@+id/step_desc_container"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside" />
 
     <FrameLayout
         android:id="@+id/step_nav_container"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:scaleType="centerInside"/>
-
-
-
-
-
-
+        android:scaleType="centerInside" />
 </LinearLayout>

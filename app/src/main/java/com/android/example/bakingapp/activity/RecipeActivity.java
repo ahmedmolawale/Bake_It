@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -56,9 +54,12 @@ public class RecipeActivity extends AppCompatActivity
     public static final String INGREDIENT_EXTRA = "ingredient_extra";
     public static final String STEP_EXTRA = "step_extra";
     public static final String RECIPE_NAME = "recipe_name";
+    public static final String RECIPES_TITLE = "Recipes";
 
-    @BindView(R.id.recipe_recycler_view) RecyclerView recipeRecyclerView;
-    @BindView(R.id.recipe_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.recipe_recycler_view)
+    RecyclerView recipeRecyclerView;
+    @BindView(R.id.recipe_progress_bar)
+    ProgressBar mProgressBar;
 
     private RecipeAdapter recipeAdapter;
     private LinearLayoutManager layoutManager;
@@ -87,17 +88,15 @@ public class RecipeActivity extends AppCompatActivity
         ButterKnife.bind(RecipeActivity.this);
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null)
-            actionBar.setTitle("Recipes");
+        if (actionBar != null)
+            actionBar.setTitle(RECIPES_TITLE);
 
         boolean tabView = false;
         if (findViewById(R.id.recipe_list_on_tab) != null) tabView = true;
         if (tabView) {
             //set the layout of the recycler view to be grid layout
-            layoutManager = new GridLayoutManager(this, 3);
-
+            layoutManager = new GridLayoutManager(this, 2);
         } else {
-            //if landscape,use grid view of 3
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
                 layoutManager = new GridLayoutManager(this, 2);
             else
@@ -108,11 +107,9 @@ public class RecipeActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
-            Log.e("See!!!", "Calledddd");
             sail();
             return;
         }
-
         getIdlingResource();
 
     }
@@ -120,7 +117,7 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if(Util.SDK_INT >23){
+        if (Util.SDK_INT > 23) {
             if (Utility.isOnline(this))
                 callToApi();
             else {
@@ -139,7 +136,7 @@ public class RecipeActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         //if we do have internet, load remotely otherwise load locally
-        if(Util.SDK_INT <= 23){
+        if (Util.SDK_INT <= 23) {
             if (Utility.isOnline(this))
                 callToApi();
             else {
@@ -262,7 +259,6 @@ public class RecipeActivity extends AppCompatActivity
                 RecipeActivity.this.recipes = recipes;
                 sail();
             }
-
         };
 
         task.execute();
@@ -277,19 +273,19 @@ public class RecipeActivity extends AppCompatActivity
             mIdlingResource.setIdleState(true);
         }
     }
+
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
         sail();
     }
 
-    void callToApi() {
+    public void callToApi() {
 
         if (!Utility.isOnline(this)) {
             String title = "Connection";
             String message = "No internet connection. Please try again.";
             displayMessage(this, title, message);
-
             return;
         }
         mProgressBar.setVisibility(View.VISIBLE);
@@ -431,7 +427,7 @@ public class RecipeActivity extends AppCompatActivity
         ArrayList<Ingredient> ingredients = recipes.get(position).getIngredients();
         if (ingredients != null && ingredients.size() > 0) {
             intent.putParcelableArrayListExtra(INGREDIENT_EXTRA, ingredients);
-            intent.putExtra(RECIPE_NAME,recipes.get(position).getName());
+            intent.putExtra(RECIPE_NAME, recipes.get(position).getName());
             startActivity(intent);
         } else {
             Toast toast = Toast.makeText(this, "No Ingredient for Recipe.", Toast.LENGTH_SHORT);
@@ -451,7 +447,7 @@ public class RecipeActivity extends AppCompatActivity
         launchStepDetails(position);
     }
 
-    public void launchStepDetails(int position){
+    public void launchStepDetails(int position) {
         Intent intent = new Intent(RecipeActivity.this, StepActivity.class);
         Recipe recipe = recipes.get(position);
         ArrayList<Step> steps = recipes.get(position).getSteps();
@@ -464,7 +460,7 @@ public class RecipeActivity extends AppCompatActivity
         RecipeService.startActionUpdateRecipeWidgets(this);
         if (steps != null && steps.size() > 0) {
             intent.putParcelableArrayListExtra(STEP_EXTRA, steps);
-            intent.putExtra(RECIPE_NAME,recipe.getName());
+            intent.putExtra(RECIPE_NAME, recipe.getName());
 
         } else {
             Toast toast = Toast.makeText(this, "No Steps for Recipe.", Toast.LENGTH_SHORT);
@@ -473,7 +469,7 @@ public class RecipeActivity extends AppCompatActivity
         }
         if (ingredients != null && ingredients.size() > 0) {
             intent.putParcelableArrayListExtra(INGREDIENT_EXTRA, ingredients);
-            intent.putExtra(RECIPE_NAME,recipe.getName());
+            intent.putExtra(RECIPE_NAME, recipe.getName());
         } else {
             Toast toast = Toast.makeText(this, "No Ingredients for Recipe.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);

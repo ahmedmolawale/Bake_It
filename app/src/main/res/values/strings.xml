@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Baking App</string>
+    <string name="app_name">Bake It!</string>
     <string name="ingredient_button">Ingredients</string>
     <string name="steps_button">Steps</string>
     <string name="recipe_name">Recipe Name</string>
@@ -20,4 +20,5 @@
     <string name="empty_view_text">No Desired Recipe Yet</string>
     <string name="recipe_ingredient">Recipe Ingredients</string>
     <string name="first_pie">Nutella Pie</string>
+    <string name="image_desc">Image</string>
 </resources>

@@ -20,7 +20,7 @@ public class RecipeContentProvider {
 
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
-    //paths for accessing data...corresponding to the table names =, basically
+    //paths for accessing data...corresponding to the table names, basically
     interface Path {
         String RECIPES = "recipes";
         String RECIPE_INGREDIENTS = "recipe_ingredients";

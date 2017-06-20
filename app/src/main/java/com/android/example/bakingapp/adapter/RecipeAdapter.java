@@ -40,6 +40,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
         void onIngredientClick(int position);
 
         void onStepsClick(int position);
+
         void onCardViewClick(int position);
 
     }

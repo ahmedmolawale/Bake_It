@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -40,9 +41,9 @@
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/textView4"
         android:layout_toRightOf="@+id/textView4"
-        android:text="@string/quantity_value"
         android:textColor="@color/black"
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        tool:text="@string/quantity_value" />
 
     <TextView
         android:id="@+id/textView6"
@@ -66,13 +67,8 @@
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@+id/textView6"
         android:layout_toRightOf="@+id/textView6"
-        android:text="@string/measure_value"
         android:textColor="@color/black"
-        android:textSize="17sp" />
+        android:textSize="17sp"
+        tool:text="@string/measure_value" />
 
-    <!--View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"
-        android:layout_below="@id/measure_widget"/-->
 </RelativeLayout>

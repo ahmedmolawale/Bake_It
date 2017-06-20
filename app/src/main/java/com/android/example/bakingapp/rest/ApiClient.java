@@ -15,18 +15,13 @@ public class ApiClient {
 
 
     /**
-     *
-     *
-     *
      * A static method to initialize the retrofit object with the base url and converter
-     *
-     *
      *
      * @return Retrofit object
      */
-    public static Retrofit getClient(){
+    public static Retrofit getClient() {
 
-        if(retrofit == null) {
+        if (retrofit == null) {
             //initializing the Retrofit builder, adding the base url and Converter to use
             retrofitBuilder = new Retrofit.Builder();
             retrofitBuilder.baseUrl(BASE_URL);

@@ -54,18 +54,19 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Cu
         @BindView(R.id.ingredient_name)
         TextView ingredientName;
         @BindView(R.id.quantity_value)
-         TextView quantity;
+        TextView quantity;
         @BindView(R.id.measure_value)
-         TextView measure;
+        TextView measure;
+
         public CustomViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
-        public void bind(int position){
+        public void bind(int position) {
             String ingredientName = ingredients.get(position).getIngredient();
             double quantity = ingredients.get(position).getQuantity();
-            String measure  = ingredients.get(position).getMeasure();
+            String measure = ingredients.get(position).getMeasure();
 
             this.ingredientName.setText(ingredientName);
             this.quantity.setText(String.valueOf(quantity));

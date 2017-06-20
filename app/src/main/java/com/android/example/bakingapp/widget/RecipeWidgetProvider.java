@@ -14,10 +14,9 @@ import com.android.example.bakingapp.R;
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId,String recipeName,int imgRes) {
+                                int appWidgetId, String recipeName, int imgRes) {
         // Construct the RemoteViews object
-        RemoteViews views = getListRemoteViews(context,recipeName,imgRes);
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
+        RemoteViews views = getListRemoteViews(context, recipeName, imgRes);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -28,20 +27,21 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         RecipeService.startActionUpdateRecipeWidgets(context);
     }
-    public static void updateRecipeWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,String recipeName,int imgRes) {
+
+    public static void updateRecipeWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, String recipeName, int imgRes) {
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId,recipeName,imgRes);
+            updateAppWidget(context, appWidgetManager, appWidgetId, recipeName, imgRes);
         }
     }
 
-    private static RemoteViews getListRemoteViews(Context context,String recipeName,int imgRes) {
+    private static RemoteViews getListRemoteViews(Context context, String recipeName, int imgRes) {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_list_view);
         //create an adapter for the remoteviews by creating an intent for the service
         Intent intent = new Intent(context, ListWidgetService.class);
         remoteViews.setRemoteAdapter(R.id.list_view_widget, intent);
         remoteViews.setEmptyView(R.id.list_view_widget, R.id.empty_view);
-        remoteViews.setTextViewText(R.id.recipe_name_widget,recipeName);
-        remoteViews.setImageViewResource(R.id.recipe_image_widget,imgRes);
+        remoteViews.setTextViewText(R.id.recipe_name_widget, recipeName);
+        remoteViews.setImageViewResource(R.id.recipe_image_widget, imgRes);
         return remoteViews;
     }
 

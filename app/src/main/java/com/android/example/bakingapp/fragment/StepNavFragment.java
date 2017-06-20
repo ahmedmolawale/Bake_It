@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.model.Step;
@@ -30,9 +29,9 @@ public class StepNavFragment extends Fragment {
     private static final String NEXT_POSITION = "next_position";
     private static final String POSITION = "position";
     @BindView(R.id.step_prev)
-     FloatingActionButton prev;
+    FloatingActionButton prev;
     @BindView(R.id.step_next)
-     FloatingActionButton next;
+    FloatingActionButton next;
     private ArrayList<Step> steps;
     private int position;
     private int prevPositionTemp;
@@ -67,9 +66,9 @@ public class StepNavFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.fragment_recipe_step_nav, container, false);
-       unbinder =  ButterKnife.bind(StepNavFragment.this,view);
+        unbinder = ButterKnife.bind(StepNavFragment.this, view);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             steps = savedInstanceState.getParcelableArrayList(STEPS);
             position = savedInstanceState.getInt(POSITION);
             prevPositionTemp = savedInstanceState.getInt(PREV_POSITION);
@@ -119,12 +118,14 @@ public class StepNavFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STEPS,this.steps);
-        outState.putInt(POSITION,position);
-        outState.putInt(PREV_POSITION,prevPositionTemp);
-        outState.putInt(NEXT_POSITION,nextPositionTemp);
+        outState.putParcelableArrayList(STEPS, this.steps);
+        outState.putInt(POSITION, position);
+        outState.putInt(PREV_POSITION, prevPositionTemp);
+        outState.putInt(NEXT_POSITION, nextPositionTemp);
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }

@@ -5,6 +5,7 @@ import net.simonvt.schematic.annotation.ConflictResolutionType;
 import net.simonvt.schematic.annotation.DataType;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
+
 /**
  * Uses the Schematic (https://github.com/SimonVT/schematic) library to define the columns in a
  * content provider baked by a database
@@ -13,8 +14,7 @@ import net.simonvt.schematic.annotation.PrimaryKey;
 public class RecipeContract {
 
 
-
-    public final class RecipeEntry{
+    public final class RecipeEntry {
 
         @DataType(DataType.Type.INTEGER)
         @PrimaryKey(onConflict = ConflictResolutionType.REPLACE)
@@ -33,7 +33,7 @@ public class RecipeContract {
     }
 
 
-    public final class RecipeIngredientsEntry{
+    public final class RecipeIngredientsEntry {
 
         @DataType(DataType.Type.INTEGER)
         @PrimaryKey(onConflict = ConflictResolutionType.REPLACE)
@@ -57,7 +57,7 @@ public class RecipeContract {
 
     }
 
-    public final class RecipeStepsEntry{
+    public final class RecipeStepsEntry {
 
         @DataType(DataType.Type.INTEGER)
         @PrimaryKey(onConflict = ConflictResolutionType.REPLACE)

@@ -1,19 +1,18 @@
 package com.android.example.bakingapp.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.adapter.StepsFragmentAdapter;
 import com.android.example.bakingapp.fragment.StepDescFragment;
 import com.android.example.bakingapp.fragment.StepVideoFragment;
 import com.android.example.bakingapp.model.Step;
-import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
@@ -49,14 +48,22 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
             stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(0).getVideoURL());
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.step_video_container, stepVideoFragment)
+                    .replace(R.id.step_video_container, stepVideoFragment)
                     .commit();
 
             StepDescFragment stepDescFragment = new StepDescFragment();
             stepDescFragment.setDescStep(this.steps.get(0));
             fragmentManager.beginTransaction()
-                    .add(R.id.step_desc_container, stepDescFragment)
+                    .replace(R.id.step_desc_container, stepDescFragment)
                     .commit();
+
+        } else {
+            //not tab view but landscape
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //set the ingredient view to gone
+                findViewById(R.id.ingredient_list_on_step).setVisibility(View.GONE);
+            }
+
 
         }
 
@@ -67,12 +74,6 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
     public void onListItemClick(View v, int position) {
         if (steps != null && steps.size() > 0) {
             if (tabView) {
-                //mark the view i.e button as clicked
-                if (Util.SDK_INT > 22) {
-                    v.setBackgroundColor(getResources().getColor(R.color.colorAccent, null));
-                } else {
-                    v.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                }
                 StepVideoFragment stepVideoFragment = new StepVideoFragment();
                 stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
                 FragmentManager fragmentManager = getSupportFragmentManager();
@@ -87,8 +88,7 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
                         .commit();
 
             } else {
-                Step step = steps.get(position);
-                Toast.makeText(getApplicationContext(), "Step - " + step.getShortDescription(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Step - " + step.getShortDescription(), Toast.LENGTH_LONG).show();
                 //launch the step detail activity
                 Intent intent = new Intent(StepActivity.this, StepDetailsActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, steps);

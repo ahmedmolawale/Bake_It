@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.model.Step;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -20,11 +18,11 @@ import java.util.ArrayList;
 
 public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdapter.CustomViewHolder> {
 
-    Context context;
-    ArrayList<Step> recipeSteps;
-    OnListItemClickListener onListItemClickListener;
+    private Context context;
+    private ArrayList<Step> recipeSteps;
+    private OnListItemClickListener onListItemClickListener;
 
-    public StepsFragmentAdapter(Context context,ArrayList<Step> recipeSteps, OnListItemClickListener onListItemClickListener) {
+    public StepsFragmentAdapter(Context context, ArrayList<Step> recipeSteps, OnListItemClickListener onListItemClickListener) {
         this.context = context;
         this.recipeSteps = recipeSteps;
         this.onListItemClickListener = onListItemClickListener;
@@ -32,7 +30,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
 
     //interface to handle clicks
     public interface OnListItemClickListener {
-        void onListItemClick(View v,int position);
+        void onListItemClick(View v, int position);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            onListItemClickListener.onListItemClick(v,position);
+            onListItemClickListener.onListItemClick(v, position);
         }
     }
 }

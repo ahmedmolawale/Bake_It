@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
-import android.widget.Toast;
 
 import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.activity.RecipeActivity;
@@ -20,12 +18,13 @@ import com.android.example.bakingapp.data.RecipeContract;
 
 public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
-    Context mContext;
-    Cursor mCursor;
+    private Context mContext;
+    private Cursor mCursor;
 
-    public ListRemoteViewsFactory(Context context){
+    public ListRemoteViewsFactory(Context context) {
         mContext = context;
     }
+
     @Override
     public void onCreate() {
 
@@ -35,11 +34,10 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     public void onDataSetChanged() {
         //retrieve the
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int id = sharedPreferences.getInt(RecipeActivity.RECIPES_ID,-1);
+        int id = sharedPreferences.getInt(RecipeActivity.RECIPES_ID, -1);
         //get the ingredients of the recipe
-        Log.e("See here!!!!","The Id is "+id);
         mCursor = mContext.getContentResolver().query(RecipeContentProvider.RecipeIngredients.withId(id),
-                null,null,null,null);
+                null, null, null, null);
 
     }
 
@@ -50,7 +48,7 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public int getCount() {
-        if(mCursor == null ) return 0;
+        if (mCursor == null) return 0;
         return mCursor.getCount();
     }
 
@@ -65,8 +63,7 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
     public RemoteViews getViewAt(int position) {
         //we build each list item here...its a RemoteViews
 
-        if(mCursor == null || mCursor.getCount() ==0) return null;
-
+        if (mCursor == null || mCursor.getCount() == 0) return null;
         mCursor.moveToPosition(position);
 
         String ingredientName = mCursor.getString(mCursor.getColumnIndex(RecipeContract.RecipeIngredientsEntry.COLUMN_INGREDIENT_NAME));
@@ -75,17 +72,14 @@ public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFac
 
         //get the RemoteViews
         RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.ingredient_widget);
-        //RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(),R.layout.ingredient_widget_item);
-
         StringBuilder ingredientDetail = new StringBuilder();
-        ingredientDetail.append(ingredientName);
-        ingredientDetail.append(" ("+quantity);
-        ingredientDetail.append(" "+measure+" )");
+        ingredientDetail.append(ingredientName)
+                .append(" (" + quantity)
+                .append(" " + measure + " )");
 
-        remoteViews.setTextViewText(R.id.ingredient_detail,ingredientDetail);
-        remoteViews.setTextViewText(R.id.ingredient_widget,ingredientName);
-        remoteViews.setTextViewText(R.id.measure_widget,measure);
-        remoteViews.setTextViewText(R.id.quatity_widget,String.valueOf(quantity));
+        remoteViews.setTextViewText(R.id.ingredient_widget, ingredientName);
+        remoteViews.setTextViewText(R.id.measure_widget, measure);
+        remoteViews.setTextViewText(R.id.quatity_widget, String.valueOf(quantity));
         return remoteViews;
     }
 

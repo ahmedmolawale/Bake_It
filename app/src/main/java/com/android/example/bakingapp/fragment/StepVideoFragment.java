@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.android.example.bakingapp.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -38,8 +39,7 @@ public class StepVideoFragment extends Fragment {
     private static final String MEDIA_URI = "media_url";
     private static final String CURRENT_WINDOW_INDEX = "current_window_index";
     private static final String AUTO_PLAY = "auto_play";
-    @BindView(R.id.playerView)
-    SimpleExoPlayerView mPlayerView;
+
     private SimpleExoPlayer mExoPlayer;
     private String mediaUri;
     private long playbackPosition;
@@ -47,6 +47,10 @@ public class StepVideoFragment extends Fragment {
     private boolean autoPlay;
     private Unbinder unbinder;
 
+    @BindView(R.id.playerView)
+    SimpleExoPlayerView mPlayerView;
+    @BindView(R.id.no_video_image)
+    ImageView noVideoImage;
 
     @Nullable
     @Override
@@ -54,22 +58,21 @@ public class StepVideoFragment extends Fragment {
 
 
         View view = inflater.inflate(R.layout.fragment_recipe_step_video, container, false);
-        unbinder = ButterKnife.bind(StepVideoFragment.this,view);
-        if(savedInstanceState != null){
+        unbinder = ButterKnife.bind(StepVideoFragment.this, view);
+        if (savedInstanceState != null) {
             this.mediaUri = savedInstanceState.getString(MEDIA_URI);
-            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION,0);
-            currentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_INDEX,0);
-            autoPlay = savedInstanceState.getBoolean(AUTO_PLAY,false);
+            playbackPosition = savedInstanceState.getLong(PLAYBACK_POSITION, 0);
+            currentWindowIndex = savedInstanceState.getInt(CURRENT_WINDOW_INDEX, 0);
+            autoPlay = savedInstanceState.getBoolean(AUTO_PLAY, false);
         }
-
         return view;
     }
 
     public void setPlayerStepVideoUrl(String uri) {
         this.mediaUri = uri;
         //initialise play position back to zer0, this is is new video play request
-        playbackPosition =0;
-        currentWindowIndex =0;
+        playbackPosition = 0;
+        currentWindowIndex = 0;
         autoPlay = true;
     }
 
@@ -88,7 +91,11 @@ public class StepVideoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT <= 23 || mExoPlayer == null) {
-            setUpMPlayer(this.mediaUri);
+            if (TextUtils.isEmpty(this.mediaUri)) {
+                mPlayerView.setVisibility(View.GONE);
+                noVideoImage.setVisibility(View.VISIBLE);
+            } else
+                setUpMPlayer(this.mediaUri);
         }
     }
 
@@ -97,7 +104,11 @@ public class StepVideoFragment extends Fragment {
         super.onStart();
         //API level 24 and above support multi window...so its safe to set up here
         if (Util.SDK_INT > 23) {
-            setUpMPlayer(this.mediaUri);
+            if (TextUtils.isEmpty(this.mediaUri)) {
+                mPlayerView.setVisibility(View.GONE);
+                noVideoImage.setVisibility(View.VISIBLE);
+            } else
+                setUpMPlayer(this.mediaUri);
         }
 
     }
@@ -106,7 +117,7 @@ public class StepVideoFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //for API lower/equal to 23, release resource early
-        if(Util.SDK_INT <=23){
+        if (Util.SDK_INT <= 23) {
             releasePlayer();
         }
     }
@@ -114,17 +125,21 @@ public class StepVideoFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(Util.SDK_INT > 23){
+        if (Util.SDK_INT > 23) {
             releasePlayer();
         }
     }
+
     /**
      * Release ExoPlayer.
      */
     private void releasePlayer() {
         //keep player state before releasing
         if (mExoPlayer != null) {
-            //keep track of player before releasing
+            //keep track of player position before releasing
+            playbackPosition = mExoPlayer.getCurrentPosition();
+            autoPlay = mExoPlayer.getPlayWhenReady();
+            currentWindowIndex = mExoPlayer.getCurrentWindowIndex();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -153,22 +168,24 @@ public class StepVideoFragment extends Fragment {
                     userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(autoPlay);
-            if(currentWindowIndex !=0 && playbackPosition != 0)
-            mExoPlayer.seekTo(currentWindowIndex,playbackPosition);
+            if (currentWindowIndex != 0 && playbackPosition != 0)
+                mExoPlayer.seekTo(currentWindowIndex, playbackPosition);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(MEDIA_URI,this.mediaUri);
-        if(mExoPlayer != null){
-            outState.putLong(PLAYBACK_POSITION,mExoPlayer.getCurrentPosition());
-            outState.putInt(CURRENT_WINDOW_INDEX,mExoPlayer.getCurrentWindowIndex());
-            outState.putBoolean(AUTO_PLAY,mExoPlayer.getPlayWhenReady());
+        outState.putString(MEDIA_URI, this.mediaUri);
+        if (mExoPlayer != null) {
+            outState.putLong(PLAYBACK_POSITION, mExoPlayer.getCurrentPosition());
+            outState.putInt(CURRENT_WINDOW_INDEX, mExoPlayer.getCurrentWindowIndex());
+            outState.putBoolean(AUTO_PLAY, mExoPlayer.getPlayWhenReady());
         }
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }

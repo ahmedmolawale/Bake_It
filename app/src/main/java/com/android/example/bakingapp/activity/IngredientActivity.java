@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -29,7 +28,6 @@ public class IngredientActivity extends AppCompatActivity {
 
     private IngredientAdapter ingredientAdapter;
     private LinearLayoutManager layoutManager;
-
     private ArrayList<Ingredient> ingredients;
 
     @Override
@@ -40,16 +38,9 @@ public class IngredientActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
 
-        boolean tabView = false;
-        if (findViewById(R.id.ingredient_list_on_tab) != null) tabView = true;
-        if (tabView) {
-            //set the layout of the recycler view to be grid layout
-            layoutManager = new GridLayoutManager(this, 5);
-            ingredientRecyclerView.setLayoutManager(layoutManager);
-        } else {
-            layoutManager = new LinearLayoutManager(this);
-            ingredientRecyclerView.setLayoutManager(layoutManager);
-        }
+        layoutManager = new LinearLayoutManager(this);
+        ingredientRecyclerView.setLayoutManager(layoutManager);
+
         ingredientRecyclerView.setHasFixedSize(true);
         // Add dividers
 
@@ -64,7 +55,7 @@ public class IngredientActivity extends AppCompatActivity {
             ingredientRecyclerView.setAdapter(ingredientAdapter);
             return;
         }
-        String recipeName ="";
+        String recipeName = "";
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(RecipeActivity.INGREDIENT_EXTRA)) {
             this.ingredients = intent.getParcelableArrayListExtra(RecipeActivity.INGREDIENT_EXTRA);
@@ -82,8 +73,9 @@ public class IngredientActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //to avoid any reload when orientation is changed
-        outState.putParcelableArrayList(INGREDIENT_ID, ingredients);
         super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(INGREDIENT_ID, ingredients);
+
     }
 
     @Override
