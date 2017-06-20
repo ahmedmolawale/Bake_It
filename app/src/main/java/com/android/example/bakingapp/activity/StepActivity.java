@@ -17,9 +17,12 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
+import static com.android.example.bakingapp.activity.RecipeActivity.RECIPE_NAME;
+
 public class StepActivity extends AppCompatActivity implements StepsFragmentAdapter.OnListItemClickListener {
 
     public static final String POSITION_EXTRA = "position_extra";
+    private static final String BAKING_STEPS = " Baking Steps";
     private boolean tabView = false;
     private ArrayList<Step> steps;
 
@@ -28,12 +31,15 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.step_activity_layout);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
-            actionBar.setTitle("Recipe Baking Steps");
-        }
+
+        String recipeName = "";
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(RecipeActivity.STEP_EXTRA)) {
             steps = intent.getParcelableArrayListExtra(RecipeActivity.STEP_EXTRA);
+            recipeName = intent.getStringExtra(RECIPE_NAME);
+        }
+        if (actionBar != null) {
+            actionBar.setTitle(recipeName + BAKING_STEPS);
         }
         if (findViewById(R.id.step_activity_tab) != null) {
             //tablet view

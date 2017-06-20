@@ -6,8 +6,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.core.deps.guava.annotations.VisibleForTesting;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,6 +28,7 @@ import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.adapter.RecipeAdapter;
 import com.android.example.bakingapp.data.RecipeContentProvider;
 import com.android.example.bakingapp.data.RecipeContract;
+import com.android.example.bakingapp.idlingresource.SimpleIdlingResource;
 import com.android.example.bakingapp.model.Ingredient;
 import com.android.example.bakingapp.model.Recipe;
 import com.android.example.bakingapp.model.Step;
@@ -30,6 +36,7 @@ import com.android.example.bakingapp.rest.ApiClient;
 import com.android.example.bakingapp.rest.ApiInterface;
 import com.android.example.bakingapp.util.Utility;
 import com.android.example.bakingapp.widget.RecipeService;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 
@@ -48,14 +55,30 @@ public class RecipeActivity extends AppCompatActivity
     public static final String RECIPES_ID = "recipes_id";
     public static final String INGREDIENT_EXTRA = "ingredient_extra";
     public static final String STEP_EXTRA = "step_extra";
+    public static final String RECIPE_NAME = "recipe_name";
 
     @BindView(R.id.recipe_recycler_view) RecyclerView recipeRecyclerView;
     @BindView(R.id.recipe_progress_bar) ProgressBar mProgressBar;
 
     private RecipeAdapter recipeAdapter;
     private LinearLayoutManager layoutManager;
-
     private ArrayList<Recipe> recipes;
+
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +89,7 @@ public class RecipeActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!=null)
             actionBar.setTitle("Recipes");
+
         boolean tabView = false;
         if (findViewById(R.id.recipe_list_on_tab) != null) tabView = true;
         if (tabView) {
@@ -88,21 +112,46 @@ public class RecipeActivity extends AppCompatActivity
             sail();
             return;
         }
-        //if we have internet
-        //call the Api to get the data
-        //if we have internet, load remotely otherwise load locally
-        if (Utility.isOnline(this))
-            callToApi();
-        else {
-            //if recipes is available locally, load it
-            if (checkRecipesLocally()) {
-                loadRecipeLocally();
-            } else {
-                //try api again
+
+        getIdlingResource();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(Util.SDK_INT >23){
+            if (Utility.isOnline(this))
                 callToApi();
+            else {
+                //if recipes is available locally, load it
+                if (checkRecipesLocally()) {
+                    loadRecipeLocally();
+                } else {
+                    //try api again
+                    callToApi();
+                }
             }
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //if we do have internet, load remotely otherwise load locally
+        if(Util.SDK_INT <= 23){
+            if (Utility.isOnline(this))
+                callToApi();
+            else {
+                //if recipes is available locally, load it
+                if (checkRecipesLocally()) {
+                    loadRecipeLocally();
+                } else {
+                    //try api again
+                    callToApi();
+                }
+            }
+        }
     }
 
     private void loadRecipeLocally() {
@@ -111,6 +160,18 @@ public class RecipeActivity extends AppCompatActivity
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                //set the idle state to false before
+                /**
+                 * The IdlingResource is null in production as set by the @Nullable annotation which means
+                 * the value is allowed to be null.
+                 *
+                 * If the idle state is true, Espresso can perform the next action.
+                 * If the idle state is false, Espresso will wait until it is true before
+                 * performing the next action.
+                 */
+                if (mIdlingResource != null) {
+                    mIdlingResource.setIdleState(false);
+                }
                 mProgressBar.setVisibility(View.VISIBLE);
             }
 
@@ -211,8 +272,11 @@ public class RecipeActivity extends AppCompatActivity
         recipeAdapter = new RecipeAdapter(this, recipes, this);
         recipeAdapter.notifyDataSetChanged();
         recipeRecyclerView.setAdapter(recipeAdapter);
+        //once we give the recycler view its adapter, we set the idle state to true so that test the can run
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(true);
+        }
     }
-
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
@@ -222,7 +286,6 @@ public class RecipeActivity extends AppCompatActivity
     void callToApi() {
 
         if (!Utility.isOnline(this)) {
-
             String title = "Connection";
             String message = "No internet connection. Please try again.";
             displayMessage(this, title, message);
@@ -230,6 +293,17 @@ public class RecipeActivity extends AppCompatActivity
             return;
         }
         mProgressBar.setVisibility(View.VISIBLE);
+        /**
+         * The IdlingResource is null in production as set by the @Nullable annotation which means
+         * the value is allowed to be null.
+         *
+         * If the idle state is true, Espresso can perform the next action.
+         * If the idle state is false, Espresso will wait until it is true before
+         * performing the next action.
+         */
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(false);
+        }
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         Call<ArrayList<Recipe>> callToApi = apiInterface.getRecipes();
@@ -357,6 +431,7 @@ public class RecipeActivity extends AppCompatActivity
         ArrayList<Ingredient> ingredients = recipes.get(position).getIngredients();
         if (ingredients != null && ingredients.size() > 0) {
             intent.putParcelableArrayListExtra(INGREDIENT_EXTRA, ingredients);
+            intent.putExtra(RECIPE_NAME,recipes.get(position).getName());
             startActivity(intent);
         } else {
             Toast toast = Toast.makeText(this, "No Ingredient for Recipe.", Toast.LENGTH_SHORT);
@@ -389,6 +464,7 @@ public class RecipeActivity extends AppCompatActivity
         RecipeService.startActionUpdateRecipeWidgets(this);
         if (steps != null && steps.size() > 0) {
             intent.putParcelableArrayListExtra(STEP_EXTRA, steps);
+            intent.putExtra(RECIPE_NAME,recipe.getName());
 
         } else {
             Toast toast = Toast.makeText(this, "No Steps for Recipe.", Toast.LENGTH_SHORT);
@@ -397,6 +473,7 @@ public class RecipeActivity extends AppCompatActivity
         }
         if (ingredients != null && ingredients.size() > 0) {
             intent.putParcelableArrayListExtra(INGREDIENT_EXTRA, ingredients);
+            intent.putExtra(RECIPE_NAME,recipe.getName());
         } else {
             Toast toast = Toast.makeText(this, "No Ingredients for Recipe.", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);

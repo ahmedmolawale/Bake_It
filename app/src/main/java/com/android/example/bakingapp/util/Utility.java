@@ -38,4 +38,10 @@ public class Utility {
         int[] images = {R.drawable.nutella_pie,R.drawable.brownies,R.drawable.yellow_cake,R.drawable.cheese_cake};
         return BitmapFactory.decodeResource(context.getResources(),images[position]);
     }
+
+    public static int loadImageRes(int position) {
+        int[] images = {R.drawable.nutella_pie_1,R.drawable.brownies_1,R.drawable.yellow_cake_1,R.drawable.cheese_cake_1};
+        return images[position];
+    }
 }
+

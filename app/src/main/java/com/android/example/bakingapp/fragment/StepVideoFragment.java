@@ -124,6 +124,7 @@ public class StepVideoFragment extends Fragment {
     private void releasePlayer() {
         //keep player state before releasing
         if (mExoPlayer != null) {
+            //keep track of player before releasing
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;

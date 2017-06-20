@@ -3,6 +3,7 @@ package com.android.example.bakingapp.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,9 @@ public class StepDescFragment extends Fragment {
 
     private static final String STEP = "step";
     @BindView(R.id.step_short_desc)
-     TextView shortDesc;
+    TextView shortDesc;
     @BindView(R.id.step_long_desc)
-     TextView description;
+    TextView description;
 
     private Step step;
     private Unbinder unbinder;
@@ -36,9 +37,9 @@ public class StepDescFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
-        view = inflater.inflate(R.layout.fragment_recipe_step_desc,container,false);
-        unbinder = ButterKnife.bind(StepDescFragment.this,view);
-        if(savedInstanceState != null){
+        view = inflater.inflate(R.layout.fragment_recipe_step_desc, container, false);
+        unbinder = ButterKnife.bind(StepDescFragment.this, view);
+        if (savedInstanceState != null) {
             this.step = savedInstanceState.getParcelable(STEP);
         }
         return view;
@@ -74,26 +75,11 @@ public class StepDescFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(STEP,this.step);
-    }
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(Util.SDK_INT <=23){
-            shortDesc = null;
-            description = null;
-        }
+        outState.putParcelable(STEP, this.step);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(Util.SDK_INT > 23){
-            shortDesc = null;
-            description = null;
-        }
-    }
-    @Override public void onDestroyView() {
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }

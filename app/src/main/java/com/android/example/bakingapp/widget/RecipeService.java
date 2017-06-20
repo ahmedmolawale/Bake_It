@@ -14,6 +14,7 @@ import com.android.example.bakingapp.R;
 import com.android.example.bakingapp.activity.RecipeActivity;
 import com.android.example.bakingapp.data.RecipeContentProvider;
 import com.android.example.bakingapp.data.RecipeContract;
+import com.android.example.bakingapp.util.Utility;
 
 /**
  * Created by root on 6/16/17.
@@ -49,10 +50,12 @@ public class RecipeService extends IntentService {
             recipeName = cursor.getString(cursor.getColumnIndex(RecipeContract.RecipeEntry.COLUMN_RECIPE_NAME));
         }
 
+        //recipe id starts from 1 while position starts from zero
+        int imgRes = Utility.loadImageRes(id-1);
         //Trigger data update to handle the GridView widgets and force a data refresh
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_widget);
         //Now update all widgets
-        RecipeWidgetProvider.updateRecipeWidgets(this, appWidgetManager,appWidgetIds,recipeName);
+        RecipeWidgetProvider.updateRecipeWidgets(this, appWidgetManager,appWidgetIds,recipeName,imgRes);
 
 
     }
