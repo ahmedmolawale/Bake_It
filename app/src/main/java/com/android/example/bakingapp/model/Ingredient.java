@@ -3,12 +3,11 @@ package com.android.example.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Ingredient implements Parcelable
-{
+public class Ingredient implements Parcelable {
 
     @SerializedName("quantity")
     @Expose
@@ -23,7 +22,7 @@ public class Ingredient implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Ingredient createFromParcel(Parcel in) {
             Ingredient instance = new Ingredient();
@@ -37,8 +36,7 @@ public class Ingredient implements Parcelable
             return (new Ingredient[size]);
         }
 
-    }
-    ;
+    };
 
     public Double getQuantity() {
         return quantity;
@@ -71,7 +69,7 @@ public class Ingredient implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

@@ -12,10 +12,7 @@ import net.simonvt.schematic.annotation.PrimaryKey;
  */
 
 public class RecipeContract {
-
-
     public final class RecipeEntry {
-
         @DataType(DataType.Type.INTEGER)
         @PrimaryKey(onConflict = ConflictResolutionType.REPLACE)
         public static final String COLUMN_ID = "recipe_id";

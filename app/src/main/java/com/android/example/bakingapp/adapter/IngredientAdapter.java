@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by root on 6/13/17.
- */
-
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.CustomViewHolder> {
 
 
@@ -36,8 +32,8 @@ public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.Cu
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View itemView = layoutInflater.inflate(ingredient_item_layout, parent, attachToParentImmediately);
-        CustomViewHolder customViewHolder = new CustomViewHolder(itemView);
-        return customViewHolder;
+        return new CustomViewHolder(itemView);
+
     }
 
     @Override

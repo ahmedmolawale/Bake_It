@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by root on 6/13/17.
- */
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomViewHolder> {
 
@@ -42,7 +39,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
         void onStepsClick(int position);
 
         void onCardViewClick(int position);
-
     }
 
     @Override
@@ -53,14 +49,12 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View itemView = layoutInflater.inflate(recipe_item_layout, parent, attachToParentImmediately);
-        CustomViewHolder customViewHolder = new CustomViewHolder(itemView);
-        return customViewHolder;
+        return new CustomViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
         holder.bind(position);
-
     }
 
     @Override
@@ -115,7 +109,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.CustomView
             if (!recipeImageUrl.equals("")) loadImage(recipeImageUrl);
             else
                 recipeImage.setImageBitmap(Utility.loadImageAsset(context, position));
-            //recipeImage.setImageResource(R.drawable.brownies);
         }
 
         private void loadImage(String recipeImageUrl) {

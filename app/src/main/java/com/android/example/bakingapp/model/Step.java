@@ -3,12 +3,11 @@ package com.android.example.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Step implements Parcelable
-{
+public class Step implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -29,7 +28,7 @@ public class Step implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Step createFromParcel(Parcel in) {
             Step instance = new Step();
@@ -45,8 +44,7 @@ public class Step implements Parcelable
             return (new Step[size]);
         }
 
-    }
-    ;
+    };
 
     public Integer getId() {
         return id;
@@ -97,7 +95,7 @@ public class Step implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

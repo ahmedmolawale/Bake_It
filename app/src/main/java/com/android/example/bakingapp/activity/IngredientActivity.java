@@ -43,7 +43,6 @@ public class IngredientActivity extends AppCompatActivity {
 
         ingredientRecyclerView.setHasFixedSize(true);
         // Add dividers
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 ingredientRecyclerView.getContext(),
                 layoutManager.getOrientation());
@@ -84,5 +83,4 @@ public class IngredientActivity extends AppCompatActivity {
         ingredientAdapter = new IngredientAdapter(ingredients);
         ingredientRecyclerView.setAdapter(ingredientAdapter);
     }
-
 }

@@ -45,7 +45,7 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
             tabView = true;
             //load the recipe at position 0
             StepVideoFragment stepVideoFragment = new StepVideoFragment();
-            stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(0).getVideoURL());
+            stepVideoFragment.setPlayerStep(this.steps.get(0));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.step_video_container, stepVideoFragment)
@@ -63,19 +63,15 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
                 //set the ingredient view to gone
                 findViewById(R.id.ingredient_list_on_step).setVisibility(View.GONE);
             }
-
-
         }
 
     }
-
-
     @Override
     public void onListItemClick(View v, int position) {
         if (steps != null && steps.size() > 0) {
             if (tabView) {
                 StepVideoFragment stepVideoFragment = new StepVideoFragment();
-                stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
+                stepVideoFragment.setPlayerStep(this.steps.get(position));
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.step_video_container, stepVideoFragment)
@@ -88,7 +84,6 @@ public class StepActivity extends AppCompatActivity implements StepsFragmentAdap
                         .commit();
 
             } else {
-                //Toast.makeText(getApplicationContext(), "Step - " + step.getShortDescription(), Toast.LENGTH_LONG).show();
                 //launch the step detail activity
                 Intent intent = new Intent(StepActivity.this, StepDetailsActivity.class);
                 intent.putExtra(Intent.EXTRA_TEXT, steps);

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.android.example.bakingapp.R;
+import com.android.example.bakingapp.model.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -24,14 +25,11 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-/**
- * Created by root on 6/15/17.
- */
 
 public class StepVideoFragment extends Fragment {
 
@@ -42,6 +40,7 @@ public class StepVideoFragment extends Fragment {
 
     private SimpleExoPlayer mExoPlayer;
     private String mediaUri;
+    private String thumbnailUrl;
     private long playbackPosition;
     private int currentWindowIndex;
     private boolean autoPlay;
@@ -51,6 +50,7 @@ public class StepVideoFragment extends Fragment {
     SimpleExoPlayerView mPlayerView;
     @BindView(R.id.no_video_image)
     ImageView noVideoImage;
+
 
     @Nullable
     @Override
@@ -68,8 +68,9 @@ public class StepVideoFragment extends Fragment {
         return view;
     }
 
-    public void setPlayerStepVideoUrl(String uri) {
-        this.mediaUri = uri;
+    public void setPlayerStep(Step step) {
+        this.mediaUri = step.getVideoURL();
+        this.thumbnailUrl = step.getThumbnailURL();
         //initialise play position back to zer0, this is is new video play request
         playbackPosition = 0;
         currentWindowIndex = 0;
@@ -91,26 +92,47 @@ public class StepVideoFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT <= 23 || mExoPlayer == null) {
-            if (TextUtils.isEmpty(this.mediaUri)) {
+            if (!TextUtils.isEmpty(this.mediaUri)) {
+                setUpMPlayer(this.mediaUri);
+            } else if (!TextUtils.isEmpty(this.thumbnailUrl)) {
                 mPlayerView.setVisibility(View.GONE);
                 noVideoImage.setVisibility(View.VISIBLE);
-            } else
-                setUpMPlayer(this.mediaUri);
+                loadImageRemotely();
+            } else {
+                //leave the default no_thumbnail_url
+                mPlayerView.setVisibility(View.GONE);
+                noVideoImage.setVisibility(View.VISIBLE);
+            }
         }
     }
+
+    private void loadImageRemotely(){
+        //use Picasso to load the image
+        Picasso.with(getContext()).load(this.thumbnailUrl)
+                .placeholder(R.drawable.vid_not_avail)
+                .error(R.drawable.action_error)
+                .into(this.noVideoImage);
+    }
+
 
     @Override
     public void onStart() {
         super.onStart();
         //API level 24 and above support multi window...so its safe to set up here
         if (Util.SDK_INT > 23) {
-            if (TextUtils.isEmpty(this.mediaUri)) {
+            if (!TextUtils.isEmpty(this.mediaUri)) {
+                setUpMPlayer(this.mediaUri);
+            } else if (!TextUtils.isEmpty(this.thumbnailUrl)) {
                 mPlayerView.setVisibility(View.GONE);
                 noVideoImage.setVisibility(View.VISIBLE);
-            } else
-                setUpMPlayer(this.mediaUri);
-        }
+                loadImageRemotely();
+            } else {
+                //leave the default no_thumbnail_url
+                mPlayerView.setVisibility(View.GONE);
+                noVideoImage.setVisibility(View.VISIBLE);
+            }
 
+        }
     }
 
     @Override
@@ -133,6 +155,7 @@ public class StepVideoFragment extends Fragment {
     /**
      * Release ExoPlayer.
      */
+
     private void releasePlayer() {
         //keep player state before releasing
         if (mExoPlayer != null) {
@@ -159,9 +182,6 @@ public class StepVideoFragment extends Fragment {
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
-
-            // Set the ExoPlayer.EventListener to this activity.
-            //mExoPlayer.addListener(this);
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(getContext(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultHttpDataSourceFactory(

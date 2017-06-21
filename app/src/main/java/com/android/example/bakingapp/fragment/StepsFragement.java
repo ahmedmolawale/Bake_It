@@ -31,13 +31,13 @@ public class StepsFragement extends Fragment {
     private static final String INGREDIENTS = "ingredients";
     private StepsFragmentAdapter.OnListItemClickListener onListItemClickListener;
     @BindView(R.id.steps_recycler_view)
-     RecyclerView stepsRecyclerView;
+    RecyclerView stepsRecyclerView;
     private LinearLayoutManager layoutManager;
     private StepsFragmentAdapter stepsFragmentAdapter;
     private ArrayList<Step> recipeSteps;
     private ArrayList<Ingredient> recipeIngredients;
     @BindView(R.id.ingredient_list_on_details)
-     TextView textView;
+    TextView textView;
     private Unbinder unbinder;
 
     public StepsFragement() {
@@ -63,7 +63,7 @@ public class StepsFragement extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         view = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
-        unbinder = ButterKnife.bind(StepsFragement.this,view);
+        unbinder = ButterKnife.bind(StepsFragement.this, view);
 
         layoutManager = new LinearLayoutManager(getContext());
         stepsRecyclerView.setLayoutManager(layoutManager);
@@ -93,7 +93,7 @@ public class StepsFragement extends Fragment {
             ingredientBuilder.append("\n");
         }
         textView.setText(ingredientBuilder.toString());
-        stepsFragmentAdapter = new StepsFragmentAdapter(getContext(), recipeSteps, onListItemClickListener);
+        stepsFragmentAdapter = new StepsFragmentAdapter(recipeSteps, onListItemClickListener);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 stepsRecyclerView.getContext(),
                 layoutManager.getOrientation());
@@ -109,7 +109,9 @@ public class StepsFragement extends Fragment {
         outState.putParcelableArrayList(INGREDIENTS, recipeIngredients);
 
     }
-    @Override public void onDestroyView() {
+
+    @Override
+    public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }

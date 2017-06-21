@@ -16,10 +16,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-/**
- * Created by root on 6/15/17.
- */
-
 public class StepDescFragment extends Fragment {
 
     private static final String STEP = "step";
@@ -30,8 +26,6 @@ public class StepDescFragment extends Fragment {
 
     private Step step;
     private Unbinder unbinder;
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

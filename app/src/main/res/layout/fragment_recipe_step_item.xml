@@ -17,7 +17,7 @@
         android:layout_marginTop="20dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size"
         tool:text="@string/recipe_name" />
 
 </LinearLayout>

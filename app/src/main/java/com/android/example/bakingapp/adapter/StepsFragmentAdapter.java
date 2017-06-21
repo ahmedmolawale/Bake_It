@@ -12,18 +12,13 @@ import com.android.example.bakingapp.model.Step;
 
 import java.util.ArrayList;
 
-/**
- * Created by root on 6/13/17.
- */
 
 public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdapter.CustomViewHolder> {
 
-    private Context context;
     private ArrayList<Step> recipeSteps;
     private OnListItemClickListener onListItemClickListener;
 
-    public StepsFragmentAdapter(Context context, ArrayList<Step> recipeSteps, OnListItemClickListener onListItemClickListener) {
-        this.context = context;
+    public StepsFragmentAdapter(ArrayList<Step> recipeSteps, OnListItemClickListener onListItemClickListener) {
         this.recipeSteps = recipeSteps;
         this.onListItemClickListener = onListItemClickListener;
     }
@@ -41,8 +36,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View itemView = layoutInflater.inflate(step_item_layout, parent, attachToParentImmediately);
-        CustomViewHolder customViewHolder = new CustomViewHolder(itemView);
-        return customViewHolder;
+        return new CustomViewHolder(itemView);
     }
 
     @Override
@@ -67,10 +61,7 @@ public class StepsFragmentAdapter extends RecyclerView.Adapter<StepsFragmentAdap
 
         public void bind(final int position) {
             String stepShortDes = recipeSteps.get(position).getShortDescription();
-
             this.stepShorDesc.setText(stepShortDes);
-
-
         }
 
         @Override

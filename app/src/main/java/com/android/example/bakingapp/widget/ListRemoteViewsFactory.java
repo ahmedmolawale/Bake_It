@@ -12,9 +12,6 @@ import com.android.example.bakingapp.activity.RecipeActivity;
 import com.android.example.bakingapp.data.RecipeContentProvider;
 import com.android.example.bakingapp.data.RecipeContract;
 
-/**
- * Created by root on 6/17/17.
- */
 
 public class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 

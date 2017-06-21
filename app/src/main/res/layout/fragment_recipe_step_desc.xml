@@ -21,7 +21,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="25dp"
             android:textColor="@color/black"
-            android:textSize="23sp"
+            android:textSize="@dimen/text_size"
             tool:text="@string/step_short_desc"
 
             />
@@ -34,7 +34,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="15dp"
             android:textColor="@color/black"
-            android:textSize="23sp"
+            android:textSize="@dimen/text_size"
             tool:text="@string/step_long_desc" />
     </LinearLayout>
 </ScrollView>

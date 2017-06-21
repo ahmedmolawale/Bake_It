@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:padding="@dimen/screen_padding">
 
     <android.support.v7.widget.CardView
         android:id="@+id/ingredient_list_on_step"
@@ -21,7 +21,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/recipe_ingredient"
             android:textColor="@color/black"
-            android:textSize="25sp" />
+            android:textSize="@dimen/text_size_extra" />
 
         <View
             android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"
                 android:textColor="@color/black"
-                android:textSize="21sp"
+                android:textSize="@dimen/text_size"
                 tool:text="@string/ingredient_activity_label" />
         </ScrollView>
     </android.support.v7.widget.CardView>

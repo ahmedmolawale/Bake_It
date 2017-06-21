@@ -18,16 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    configurations.all {
-        resolutionStrategy {
-            force 'com.android.support:support-annotations:25.3.1'
-        }
-    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -38,19 +32,6 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'design'
     }
-//    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2'),{
-//        exclude module: 'support-annotations'
-//        exclude module: 'support-v4'
-//        exclude module: 'support-v13'
-//        //exclude module: 'recyclerview-v7'
-//        exclude module: 'design'
-//    })
-
-//    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
-//        exclude group: 'com.android.support', module: 'appcompat'
-//        exclude group: 'com.android.support', module: 'support-v4'
-//        exclude module: 'recyclerview-v7'
-//    }
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -70,7 +51,6 @@ dependencies {
     // Schematic dependencies for ContentProvider
     apt 'net.simonvt.schematic:schematic-compiler:0.6.3'
     compile 'net.simonvt.schematic:schematic:0.6.3'
-    testCompile 'junit:junit:4.12'
 
     androidTestCompile 'com.android.support:support-annotations:25.3.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'

@@ -27,8 +27,6 @@ public class StepDetailsActivity extends AppCompatActivity implements StepNavFra
         setContentView(R.layout.step_details_layout);
 
         ActionBar actionBar = getSupportActionBar();
-
-
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT) && intent.hasExtra(StepActivity.POSITION_EXTRA)) {
             steps = intent.getParcelableArrayListExtra(Intent.EXTRA_TEXT);
@@ -44,19 +42,15 @@ public class StepDetailsActivity extends AppCompatActivity implements StepNavFra
         if (findViewById(R.id.step_detail_landscape) != null) {
             //landscape mode
             StepVideoFragment stepVideoFragment = new StepVideoFragment();
-            stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
+            stepVideoFragment.setPlayerStep(this.steps.get(position));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.step_video_container, stepVideoFragment)
+                    .replace(R.id.step_video_container, stepVideoFragment)
                     .commit();
 
         } else {
-
-
-            //if video is available, load video fragment, otherwise load default video not available
-
             StepVideoFragment stepVideoFragment = new StepVideoFragment();
-            stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
+            stepVideoFragment.setPlayerStep(this.steps.get(position));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .replace(R.id.step_video_container, stepVideoFragment)
@@ -81,7 +75,7 @@ public class StepDetailsActivity extends AppCompatActivity implements StepNavFra
     public void onPrevButtonClickListener(int currentPosition) {
         position = --currentPosition;
         StepVideoFragment stepVideoFragment = new StepVideoFragment();
-        stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
+        stepVideoFragment.setPlayerStep(this.steps.get(position));
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.step_video_container, stepVideoFragment)
@@ -104,7 +98,7 @@ public class StepDetailsActivity extends AppCompatActivity implements StepNavFra
     public void onNextButtonClickListener(int currentPosition) {
         position = ++currentPosition;
         StepVideoFragment stepVideoFragment = new StepVideoFragment();
-        stepVideoFragment.setPlayerStepVideoUrl(this.steps.get(position).getVideoURL());
+        stepVideoFragment.setPlayerStep(this.steps.get(position));
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.step_video_container, stepVideoFragment)

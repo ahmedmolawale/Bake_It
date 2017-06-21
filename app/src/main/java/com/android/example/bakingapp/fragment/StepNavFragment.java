@@ -17,11 +17,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-/**
- * Created by root on 6/15/17.
- */
-
 public class StepNavFragment extends Fragment {
 
     private static final String STEPS = "steps";
@@ -89,8 +84,6 @@ public class StepNavFragment extends Fragment {
         });
         return view;
     }
-
-
     public void setUpButtons(int prev, int next) {
         try {
             steps.get(prev);
@@ -98,7 +91,6 @@ public class StepNavFragment extends Fragment {
         } catch (IndexOutOfBoundsException e) {
             this.prev.setVisibility(View.GONE);
         }
-
         try {
             this.steps.get(next);
             this.next.setVisibility(View.VISIBLE);
@@ -112,7 +104,6 @@ public class StepNavFragment extends Fragment {
         this.steps = steps;
         prevPositionTemp = position - 1;
         nextPositionTemp = position + 1;
-
     }
 
     @Override

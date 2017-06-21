@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -107,8 +108,6 @@ public class RecipeActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
-            sail();
-            return;
         }
         getIdlingResource();
 
@@ -153,7 +152,6 @@ public class RecipeActivity extends AppCompatActivity
 
     private void loadRecipeLocally() {
         AsyncTask<Void, Void, ArrayList<Recipe>> task = new AsyncTask<Void, Void, ArrayList<Recipe>>() {
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -256,8 +254,9 @@ public class RecipeActivity extends AppCompatActivity
             protected void onPostExecute(ArrayList<Recipe> recipes) {
                 super.onPostExecute(recipes);
                 mProgressBar.setVisibility(View.INVISIBLE);
-                RecipeActivity.this.recipes = recipes;
-                sail();
+                    RecipeActivity.this.recipes = recipes;
+                    sail();
+
             }
         };
 
@@ -277,7 +276,8 @@ public class RecipeActivity extends AppCompatActivity
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         recipes = savedInstanceState.getParcelableArrayList(RECIPES_ID);
-        sail();
+        if(recipes != null)  //this is where the issue lies, really
+            sail();
     }
 
     public void callToApi() {
@@ -416,7 +416,8 @@ public class RecipeActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         //to avoid any reload when orientation is changed
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(RECIPES_ID, recipes);
+        if(recipes != null)
+            outState.putParcelableArrayList(RECIPES_ID, recipes);
 
     }
 

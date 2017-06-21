@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <TextView
         android:id="@+id/ingredient_widget"
         android:layout_width="wrap_content"
@@ -18,7 +17,7 @@
         android:text="@string/ingredient_name"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
         android:textColor="@color/black"
-        android:textSize="17sp" />
+        android:textSize="@dimen/text_size_on_ingredient_widget" />
 
     <TextView
         android:id="@+id/textView4"
@@ -30,7 +29,7 @@
         android:layout_marginTop="15dp"
         android:text="@string/quantity_label"
         android:textColor="@color/colorAccent"
-        android:textSize="17sp" />
+        android:textSize="@dimen/text_size_on_ingredient_widget" />
 
     <TextView
         android:id="@+id/quatity_widget"
@@ -42,7 +41,7 @@
         android:layout_toEndOf="@+id/textView4"
         android:layout_toRightOf="@+id/textView4"
         android:textColor="@color/black"
-        android:textSize="17sp"
+        android:textSize="@dimen/text_size_on_ingredient_widget"
         tool:text="@string/quantity_value" />
 
     <TextView
@@ -56,7 +55,7 @@
         android:layout_toRightOf="@+id/quatity_widget"
         android:text="@string/measure_label"
         android:textColor="@color/colorAccent"
-        android:textSize="17sp" />
+        android:textSize="@dimen/text_size_on_ingredient_widget" />
 
     <TextView
         android:id="@+id/measure_widget"
@@ -68,7 +67,7 @@
         android:layout_toEndOf="@+id/textView6"
         android:layout_toRightOf="@+id/textView6"
         android:textColor="@color/black"
-        android:textSize="17sp"
+        android:textSize="@dimen/text_size_on_ingredient_widget"
         tool:text="@string/measure_value" />
 
 </RelativeLayout>

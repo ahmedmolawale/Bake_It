@@ -1,16 +1,15 @@
 
 package com.android.example.bakingapp.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Recipe implements Parcelable
-{
+import java.util.ArrayList;
+
+public class Recipe implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -34,7 +33,7 @@ public class Recipe implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Recipe createFromParcel(Parcel in) {
             Recipe instance = new Recipe();
@@ -51,8 +50,7 @@ public class Recipe implements Parcelable
             return (new Recipe[size]);
         }
 
-    }
-    ;
+    };
 
     public Integer getId() {
         return id;
@@ -112,7 +110,7 @@ public class Recipe implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

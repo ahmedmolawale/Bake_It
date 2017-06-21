@@ -16,8 +16,6 @@ import net.simonvt.schematic.annotation.TableEndpoint;
 public class RecipeContentProvider {
 
     public static final String AUTHORITY = "com.android.example.bakingapp.provider";
-
-
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     //paths for accessing data...corresponding to the table names, basically
@@ -92,6 +90,4 @@ public class RecipeContentProvider {
             return buildUri(Path.RECIPE_STEPS, String.valueOf(id));
         }
     }
-
-
 }
